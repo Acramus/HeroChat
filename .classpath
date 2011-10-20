@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="LIBRARY/CraftIRC.jar"/>
-	<classpathentry kind="var" path="LIBRARY/bukkit-0.0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="LIBRARY/Permissions.jar"/>
-	<classpathentry kind="var" path="LIBRARY/Multiverse-Core.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Oli/Documents/Eclipse/Resources/craftbukkit.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Oli/Documents/Eclipse/Resources/CraftIRC.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Oli/Documents/Eclipse/Resources/Multiverse-Core.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Oli/Documents/Eclipse/Resources/PermissionsEx.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

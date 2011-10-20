@@ -1,11 +1,3 @@
-/**
- * Copyright (C) 2011 DThielke <dave.thielke@gmail.com>
- * 
- * This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/3.0/ or send a letter to
- * Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
- **/
-
 package com.herocraftonline.dthielke.herochat;
 
 import java.io.IOException;
@@ -30,6 +22,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import ru.tehkode.permissions.bukkit.PermissionsEx;
+
 import com.ensifera.animosity.craftirc.CraftIRC;
 import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
@@ -53,10 +47,8 @@ import com.herocraftonline.dthielke.herochat.command.commands.RemoveCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.TellCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.ToggleCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.WhoCommand;
+import com.herocraftonline.dthielke.herochat.util.Permission;
 import com.herocraftonline.dthielke.herochat.util.ConfigManager;
-import com.herocraftonline.dthielke.herochat.util.PermissionManager;
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class HeroChat extends JavaPlugin {
@@ -93,7 +85,7 @@ public class HeroChat extends JavaPlugin {
     private CommandManager commandManager;
     private ConversationManager conversationManager;
     private ConfigManager configManager;
-    private PermissionManager permissionManager;
+    private Permission permission;
     private CraftIRC craftIRC;
     private String ircMessageFormat;
     private String ircTag;
@@ -125,7 +117,6 @@ public class HeroChat extends JavaPlugin {
     public void onEnable() {
         channelManager = new ChannelManager(this);
         conversationManager = new ConversationManager();
-        permissionManager = new PermissionManager(null);
         registerEvents();
         registerCommands();
 
@@ -211,25 +202,23 @@ public class HeroChat extends JavaPlugin {
     }
 
     public void loadPermissions() {
-        Plugin plugin = this.getServer().getPluginManager().getPlugin("Permissions");
-        if (plugin != null) {
-            if (plugin.isEnabled()) {
-                Permissions permissions = (Permissions) plugin;
-                PermissionHandler security = permissions.getHandler();
-                PermissionManager ph = new PermissionManager(security);
-                this.permissionManager = ph;
-                log(Level.INFO, "Permissions " + permissions.getDescription().getVersion() + " found.");
-
-                for (Player player : getServer().getOnlinePlayers()) {
-                    String name = player.getName();
-                    List<Channel> joinedChannels = channelManager.getJoinedChannels(name);
-                    for (Channel channel : joinedChannels) {
-                        if (!permissionManager.anyGroupsInList(player, channel.getWhitelist()) && !channel.getWhitelist().isEmpty()) {
-                            channel.removePlayer(name);
-                        }
+        Plugin plugin = this.getServer().getPluginManager().getPlugin("PermissionsEx");
+        if (plugin != null && plugin.isEnabled()) {
+            permission = new Permission(PermissionsEx.getPermissionManager());
+            log(Level.INFO, "PermissionsEx found.");
+            for (Player player : getServer().getOnlinePlayers()) {
+                String name = player.getName();
+                List<Channel> joinedChannels = channelManager.getJoinedChannels(name);
+                for (Channel channel : joinedChannels) {
+                    if (!permission.anyGroupsInList(player, channel.getWhitelist()) && !channel.getWhitelist().isEmpty()) {
+                        channel.removePlayer(name);
                     }
                 }
             }
+        }
+        else {
+        	log(Level.INFO, "Unable to find PermissionsEx!");
+        	this.getServer().getPluginManager().disablePlugin(this);
         }
     }
 
@@ -315,8 +304,8 @@ public class HeroChat extends JavaPlugin {
         return commandManager;
     }
 
-    public PermissionManager getPermissionManager() {
-        return permissionManager;
+    public Permission getPermissionManager() {
+        return permission;
     }
 
     public void setTag(String tag) {
