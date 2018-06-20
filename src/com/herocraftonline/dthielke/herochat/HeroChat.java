@@ -1,4 +1,4 @@
-package com.herocraftonline.dthielke.herochat;
+package com.kingdomsofold.divideetimperia.kingdomschat
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -25,33 +25,34 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 import com.ensifera.animosity.craftirc.CraftIRC;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
-import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
-import com.herocraftonline.dthielke.herochat.channels.ConversationManager;
-import com.herocraftonline.dthielke.herochat.command.CommandManager;
-import com.herocraftonline.dthielke.herochat.command.commands.BanCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.CreateCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.FocusCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.GMuteCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.HelpCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.IgnoreCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.JoinCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.KickCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.LeaveCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.ListCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.ModCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.MuteCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.QuickMsgCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.ReloadCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.RemoveCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.TellCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.ToggleCommand;
-import com.herocraftonline.dthielke.herochat.command.commands.WhoCommand;
-import com.herocraftonline.dthielke.herochat.util.Permission;
-import com.herocraftonline.dthielke.herochat.util.ConfigManager;
+import com.kingdomsofold.divideetimperia.kingdomschat.channels.Channel;
+import com.kingdomsofold.dividdetimperia.kingdomschat.channels.ChannelManager;
+import com.kingdomsofold.dividdetimperia.kingdomschat.channels.ConversationManager;
+import com.kingdomsofold.divideetimperia.kingdomschat.command.CommandManager;
+import com.kingdomsofold.divideetimperia.kingdomschat.command.commands.BanCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.ChannelCommand;
+import com.kingdomsofold.divideetimperia.kingdomschat.command.commands.CreateCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.FocusCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.GMuteCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.HelpCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.IgnoreCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.JoinCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.KickCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.LeaveCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.ListCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.ModCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.MuteCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.QuickMsgCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.ReloadCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.RemoveCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.TellCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.ToggleCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.command.commands.WhoCommand;
+import com.kingdomsofold.dividdetimperia.kingdomschat.util.Permission;
+import com.kingdomsofold.dividdetimperia.kingdomschat.util.ConfigManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
-public class HeroChat extends JavaPlugin {
+public class kingdomschat extends JavaPlugin {
 
     public enum ChatColor {
         BLACK("§0"),
@@ -79,7 +80,7 @@ public class HeroChat extends JavaPlugin {
     }
 
     private static Logger log = Logger.getLogger("Minecraft");
-    private static Logger chatLog = Logger.getLogger("HeroChat");
+    private static Logger chatLog = Logger.getLogger("KingdomsChat");
     private boolean separateChatLog;
     private ChannelManager channelManager;
     private CommandManager commandManager;
@@ -93,9 +94,9 @@ public class HeroChat extends JavaPlugin {
     private String outgoingTellFormat;
     private String incomingTellFormat;
     private List<String> censors;
-    private HeroChatServerListener serverListener;
-    private HeroChatPlayerListener playerListener;
-    private HeroChatCraftIRCListener craftIRCListener;
+    private KingdomsChatServerListener serverListener;
+    private KingdomsChatPlayerListener playerListener;
+    private KingdomsChatCraftIRCListener craftIRCListener;
     private boolean eventsRegistered = false;
     private static MultiverseCore multiverseCore = null;
 
@@ -125,7 +126,7 @@ public class HeroChat extends JavaPlugin {
             configManager.load();
         } catch (Exception e) {
             e.printStackTrace();
-            log(Level.WARNING, "Error encountered while loading data. Check your config.yml and users.yml. Disabling HeroChat.");
+            log(Level.WARNING, "Error encountered while loading data. Check your config.yml and users.yml. Disabling KingdomsChat.");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -138,7 +139,7 @@ public class HeroChat extends JavaPlugin {
             configManager.save();
         } catch (Exception e) {
             e.printStackTrace();
-            log(Level.WARNING, "Error encountered while saving data. Disabling HeroChat.");
+            log(Level.WARNING, "Error encountered while saving data. Disabling KingdomsChat");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -181,7 +182,7 @@ public class HeroChat extends JavaPlugin {
         // page 1
         commandManager.addCommand(new ListCommand(this));
         commandManager.addCommand(new WhoCommand(this));
-        commandManager.addCommand(new FocusCommand(this));
+        commandManager.addCommand(new Command(this));
         commandManager.addCommand(new JoinCommand(this));
         commandManager.addCommand(new LeaveCommand(this));
         commandManager.addCommand(new QuickMsgCommand(this));
@@ -199,6 +200,7 @@ public class HeroChat extends JavaPlugin {
         // page 3
         commandManager.addCommand(new ToggleCommand(this));
         commandManager.addCommand(new HelpCommand(this));
+        commandManager.addCommand(new ChannelCommand(this));
     }
 
     public void loadPermissions() {
@@ -289,7 +291,7 @@ public class HeroChat extends JavaPlugin {
     }
 
     public void log(Level level, String msg) {
-        log.log(level, "[HeroChat] " + msg.replaceAll("§[0-9a-f]", ""));
+        log.log(level, "[KingdomsChat] " + msg.replaceAll("§[0-9a-f]", ""));
     }
 
     public void logChat(String msg) {
